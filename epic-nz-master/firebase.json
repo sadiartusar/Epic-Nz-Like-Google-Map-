@@ -1,0 +1,41 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "epic-nz-962c4",
+          "appId": "1:1013992985642:android:c9d586c1e259525e0fdf53",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "epic-nz-962c4",
+          "appId": "1:1013992985642:ios:067587faac8fbc1b0fdf53",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "epic-nz-962c4",
+          "appId": "1:1013992985642:ios:067587faac8fbc1b0fdf53",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "epic-nz-962c4",
+          "configurations": {
+            "android": "1:1013992985642:android:c9d586c1e259525e0fdf53",
+            "ios": "1:1013992985642:ios:067587faac8fbc1b0fdf53",
+            "macos": "1:1013992985642:ios:067587faac8fbc1b0fdf53",
+            "web": "1:1013992985642:web:e1052bdfca97217e0fdf53",
+            "windows": "1:1013992985642:web:c94ac50927a1dd6a0fdf53"
+          }
+        }
+      }
+    }
+  }
+}

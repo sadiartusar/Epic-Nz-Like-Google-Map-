@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "1013992985642",
+    "firebase_url": "https://epic-nz-962c4-default-rtdb.firebaseio.com",
+    "project_id": "epic-nz-962c4",
+    "storage_bucket": "epic-nz-962c4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013992985642:android:c9d586c1e259525e0fdf53",
+        "android_client_info": {
+          "package_name": "com.example.epic_nz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013992985642-q7os7j7519ogb1bsnneeldngou2sj6pk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuFImFFNgEGTZbRHE2YmlSCka4FSrxzTo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013992985642-q7os7j7519ogb1bsnneeldngou2sj6pk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1013992985642-uh5hjivrp0e8m2grffh4jjuan8prku6q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.epicNz"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013992985642:android:9bd58d946936a6490fdf53",
+        "android_client_info": {
+          "package_name": "com.luis.epicnz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013992985642-q7os7j7519ogb1bsnneeldngou2sj6pk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuFImFFNgEGTZbRHE2YmlSCka4FSrxzTo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013992985642-q7os7j7519ogb1bsnneeldngou2sj6pk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1013992985642-uh5hjivrp0e8m2grffh4jjuan8prku6q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.epicNz"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
