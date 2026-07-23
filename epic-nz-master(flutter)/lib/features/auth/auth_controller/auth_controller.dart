@@ -76,19 +76,24 @@ class AuthController extends GetxController {
       final response = await _dio.post(
         'user/register',
         data: {
-          'full_name': fullName.value,
-          'email': email.value,
+          'full_name': fullName.value.trim(),
+          'email': email.value.trim(),
           'password': password.value.isEmpty
               ? 'temporary_password'
               : password.value,
         },
       );
 
-      print("REGISTER RESPONSE: ${response.data}");
+      print("🚀 REGISTER RESPONSE: ${response.data}");
+
+      dynamic resData = response.data;
+      if (resData is String) {
+        resData = jsonDecode(resData);
+      }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        String? token = response.data['data']?['accessToken'];
-        String? userId = response.data['data']?['createUser']?['_id'];
+        String? token = resData['data']?['accessToken'];
+        String? userId = resData['data']?['createUser']?['_id'];
 
         if (token != null && token.isNotEmpty) {
           await StorageService.saveToken(token);
@@ -97,14 +102,18 @@ class AuthController extends GetxController {
           await StorageService.saveUserId(userId);
         }
 
+        startResendTimer();
         Get.toNamed(AppRoutes.verification);
       }
     } on dio.DioException catch (e) {
       print("❌ Dio Register Error: ${e.response?.data}");
-      Get.snackbar(
-        'Error',
-        e.response?.data['message'] ?? 'Registration failed',
-      );
+      var msg = 'Registration failed';
+      if (e.response?.data is Map) {
+        msg = e.response?.data['message'] ?? msg;
+      } else if (e.response?.data is String) {
+        msg = e.response?.data;
+      }
+      Get.snackbar('Error', msg);
     } catch (e) {
       print("❌ Unexpected Register Error: $e");
       Get.snackbar(
