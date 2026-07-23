@@ -7,7 +7,7 @@ import globalErrorHandler from "./app/errorHelper/globalErrorHandler";
 import { router } from "./app/routes";
 import notFound from "./app/helper/notFound";
 import { envVar } from "./app/config/envVar";
-import rateLimit from "express-rate-limit";
+// import rateLimit from "express-rate-limit";
 import safeSanitizeMiddleware from "./app/middleware/mongo-sanitize";
 import passport from "./app/config/passport.config";
 import { subscriptionController } from "./app/modules/subscription/subscription.controller";
@@ -76,12 +76,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const limiter = rateLimit({
-  windowMs: Number(envVar.REQUEST_RATE_LIMIT_TIME) * 1000,
-  max: Number(envVar.REQUEST_RATE_LIMIT),
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// const limiter = rateLimit({
+//   windowMs: Number(envVar.REQUEST_RATE_LIMIT_TIME) * 1000,
+//   max: Number(envVar.REQUEST_RATE_LIMIT),
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
 
 // app.use(limiter);
 
