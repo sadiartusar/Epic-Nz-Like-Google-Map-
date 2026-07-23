@@ -16,7 +16,7 @@ const sendOTP = async (email: string) => {
   const otp = randomOTP();
   const redisKey = `otp:${email}`;
 
-  await safeRedisSet(redisKey, otp, OTP_EXPIRATION);
+  await safeRedisSet(redisKey, String(otp), OTP_EXPIRATION);
 
   await sendEmail({
     to: email,
@@ -53,7 +53,7 @@ const sendForgotPasswordOTP = async (email: string) => {
   const otp = randomOTP();
   const redisKey = `otp:forgot-password:${email}`;
 
-  await safeRedisSet(redisKey, otp, OTP_EXPIRATION);
+  await safeRedisSet(redisKey, String(otp), OTP_EXPIRATION);
 
   await sendEmail({
     to: email,
