@@ -84,19 +84,32 @@ class AuthController extends GetxController {
         },
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        String token = response.data['data']['accessToken'];
-        String userId = response.data['data']['createUser']['_id'];
+      print("REGISTER RESPONSE: ${response.data}");
 
-        await StorageService.saveToken(token);
-        await StorageService.saveUserId(userId);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        String? token = response.data['data']?['accessToken'];
+        String? userId = response.data['data']?['createUser']?['_id'];
+
+        if (token != null && token.isNotEmpty) {
+          await StorageService.saveToken(token);
+        }
+        if (userId != null && userId.isNotEmpty) {
+          await StorageService.saveUserId(userId);
+        }
 
         Get.toNamed(AppRoutes.verification);
       }
     } on dio.DioException catch (e) {
+      print("❌ Dio Register Error: ${e.response?.data}");
       Get.snackbar(
         'Error',
         e.response?.data['message'] ?? 'Registration failed',
+      );
+    } catch (e) {
+      print("❌ Unexpected Register Error: $e");
+      Get.snackbar(
+        'Error',
+        e.toString().replaceAll("Exception: ", ""),
       );
     } finally {
       isLoading.value = false;
