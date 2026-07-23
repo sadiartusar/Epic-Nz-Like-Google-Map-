@@ -38,6 +38,24 @@ const globalErrorHandler = (
     });
   }
 
+  // Mongoose Duplicate Key Error (E11000)
+  if (err.code === 11000) {
+    const keys = Object.keys(err.keyValue || {});
+    const field = keys.length > 0 ? keys[0] : "field";
+    return res.status(400).json({
+      status: "error",
+      message: `User with this ${field} already exists. Please login!`,
+    });
+  }
+
+  // Mongoose Validation Error
+  if (err instanceof mongoose.Error.ValidationError) {
+    return res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+
   // JWT errors
   if (err instanceof JsonWebTokenError) {
     return res.status(401).json({
@@ -53,19 +71,13 @@ const globalErrorHandler = (
     });
   }
 
-  console.error(err);
+  console.error("💥 Server Error:", err);
 
-  if (process.env.NODE_ENV === "production") {
-    return res.status(500).json({
-      status: "error",
-      message: "Something went wrong! Please try again later.",
-    });
-  }
-
-  return res.status(500).json({
+  const statusCode = err.statusCode || err.status || 500;
+  return res.status(statusCode).json({
     status: "error",
-    message: err.message || "Internal Server Error",
-    stack: err.stack,
+    message: err.message || "Something went wrong! Please try again later.",
+    ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
   });
 };
 
