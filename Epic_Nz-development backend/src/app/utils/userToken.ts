@@ -5,7 +5,7 @@ import AppError from "../errorHelper/AppError";
 import { envVar } from "../config/envVar";
 import { IUser, Role, UserStatus } from "../modules/user/user.interface";
 import User from "../modules/user/user.model";
-import { redisClient } from "../config/redisConfig";
+import { safeRedisGet, safeRedisSet } from "../config/redisConfig";
 
 export const createUserTokens = async (user: IUser) => {
   const jwtPayload = {
@@ -28,9 +28,7 @@ export const createUserTokens = async (user: IUser) => {
 
   const REFRESH_EXPIRE = 60 * 60 * 24 * 7;
 
-  await redisClient.set(`refresh:${user._id}`, refreshToken, {
-    EX: REFRESH_EXPIRE,
-  });
+  await safeRedisSet(`refresh:${user._id}`, refreshToken, REFRESH_EXPIRE);
 
   return {
     accessToken,
@@ -48,8 +46,8 @@ export const createNewAccessTokenWithRefreshToken = async (
     email: string;
   };
 
-  // 2️⃣ Check Redis
-  const storedToken = await redisClient.get(
+  // 2️⃣ Check Redis / Memory
+  const storedToken = await safeRedisGet(
     `refresh:${verifiedRefreshToken.userId}`,
   );
 

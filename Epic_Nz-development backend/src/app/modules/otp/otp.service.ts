@@ -1,5 +1,5 @@
 import User from "../user/user.model";
-import { redisClient } from "../../config/redisConfig";
+import { safeRedisDel, safeRedisGet, safeRedisSet } from "../../config/redisConfig";
 import AppError from "../../errorHelper/AppError";
 import { sendEmail } from "../../utils/sendMail";
 import { randomOTP } from "../../utils/randomOpt";
@@ -16,7 +16,7 @@ const sendOTP = async (email: string) => {
   const otp = randomOTP();
   const redisKey = `otp:${email}`;
 
-  await redisClient.set(redisKey, otp, { EX: OTP_EXPIRATION });
+  await safeRedisSet(redisKey, otp, OTP_EXPIRATION);
 
   await sendEmail({
     to: email,
@@ -31,7 +31,7 @@ const sendOTP = async (email: string) => {
 // Verify verification OTP
 const verifyOTP = async (email: string, otp: string) => {
   const redisKey = `otp:${email}`;
-  const savedOtp = await redisClient.get(redisKey);
+  const savedOtp = await safeRedisGet(redisKey);
 
   if (!savedOtp || savedOtp !== otp) {
     throw new AppError(401, "Invalid or expired OTP");
@@ -41,7 +41,7 @@ const verifyOTP = async (email: string, otp: string) => {
     { email },
     { $set: { is_verified: true, status: UserStatus.ACTIVE } },
   );
-  await redisClient.del(redisKey);
+  await safeRedisDel(redisKey);
   return true;
 };
 
@@ -53,7 +53,7 @@ const sendForgotPasswordOTP = async (email: string) => {
   const otp = randomOTP();
   const redisKey = `otp:forgot-password:${email}`;
 
-  await redisClient.set(redisKey, otp, { EX: OTP_EXPIRATION });
+  await safeRedisSet(redisKey, otp, OTP_EXPIRATION);
 
   await sendEmail({
     to: email,
@@ -68,13 +68,13 @@ const sendForgotPasswordOTP = async (email: string) => {
 // Verify forgot password OTP
 const verifyForgotPasswordOTP = async (email: string, otp: string) => {
   const redisKey = `otp:forgot-password:${email}`;
-  const savedOtp = await redisClient.get(redisKey);
+  const savedOtp = await safeRedisGet(redisKey);
 
   if (!savedOtp || savedOtp !== otp) {
     throw new AppError(401, "Invalid or expired OTP");
   }
 
-  await redisClient.del(redisKey);
+  await safeRedisDel(redisKey);
   return true;
 };
 

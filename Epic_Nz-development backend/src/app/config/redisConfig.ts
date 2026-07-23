@@ -38,3 +38,47 @@ export const connectRedis = async () => {
     console.warn("⚠️ Redis connection failed (running without Redis):", error?.message || error);
   }
 };
+
+// In-Memory Fallback Cache when Redis is unavailable
+const memoryStore = new Map<string, { value: string; expiresAt: number }>();
+
+export const safeRedisSet = async (key: string, value: string, expireSeconds: number) => {
+  if (redisClient.isOpen) {
+    try {
+      await redisClient.set(key, value, { EX: expireSeconds });
+      return;
+    } catch (e) {
+      console.warn("Redis set failed, falling back to memory:", e);
+    }
+  }
+  memoryStore.set(key, { value, expiresAt: Date.now() + expireSeconds * 1000 });
+};
+
+export const safeRedisGet = async (key: string): Promise<string | null> => {
+  if (redisClient.isOpen) {
+    try {
+      return await redisClient.get(key);
+    } catch (e) {
+      console.warn("Redis get failed, falling back to memory:", e);
+    }
+  }
+  const item = memoryStore.get(key);
+  if (!item) return null;
+  if (Date.now() > item.expiresAt) {
+    memoryStore.delete(key);
+    return null;
+  }
+  return item.value;
+};
+
+export const safeRedisDel = async (key: string) => {
+  if (redisClient.isOpen) {
+    try {
+      await redisClient.del(key);
+      return;
+    } catch (e) {
+      console.warn("Redis del failed:", e);
+    }
+  }
+  memoryStore.delete(key);
+};
