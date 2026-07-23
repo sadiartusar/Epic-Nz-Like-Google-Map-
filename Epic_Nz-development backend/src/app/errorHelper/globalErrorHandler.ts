@@ -74,10 +74,11 @@ const globalErrorHandler = (
   console.error("💥 Server Error:", err);
 
   const statusCode = err.statusCode || err.status || 500;
+  const errorMsg = err?.message || (typeof err === "string" ? err : JSON.stringify(err)) || "Unknown Error";
+
   return res.status(statusCode).json({
     status: "error",
-    message: err.message || "Something went wrong! Please try again later.",
-    ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
+    message: errorMsg,
   });
 };
 
