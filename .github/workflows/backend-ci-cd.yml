@@ -1,0 +1,61 @@
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, development ]
+    paths:
+      - 'Epic_Nz-development(backend)/**'
+      - '.github/workflows/backend-ci-cd.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Epic_Nz-development(backend)/**'
+      - '.github/workflows/backend-ci-cd.yml'
+
+jobs:
+  build-and-test:
+    name: Build & Type Check (CI)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./Epic_Nz-development(backend)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './Epic_Nz-development(backend)/package-lock.json'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: TypeScript Type Check & Build
+        run: npm run build
+
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: true
+
+  deploy:
+    name: Trigger Render Deploy (CD)
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deployment via Deploy Hook
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
+            echo "🚀 Triggering Render Deployment..."
+            curl -X POST "$RENDER_DEPLOY_HOOK"
+          else
+            echo "⚠️ RENDER_DEPLOY_HOOK secret is not set. Render will rely on automatic branch deployment."
+          fi
